@@ -434,6 +434,10 @@ git remote -v
 
 [GitHub Repository](https://github.com/hats0601-dev/dev-workstation)
 
+### VSCode 및 GitHub 연동 증거
+
+![VSCode 저장소 연동](screenshots/vscode-github.png)
+
 ## 12. 트러블슈팅
 
 실습 중 발생한 문제를 원인 가설, 확인, 해결 과정으로 정리했습니다.
