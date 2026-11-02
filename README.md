@@ -322,6 +322,8 @@ Docker_Volume_Persistence_Test
 
 ## 11. Git 및 GitHub 연동
 
+Git 설정 및 GitHub 연결 확인 로그: [git-check.txt](logs/git-check.txt)
+
 ### Git 설정
 
 ```powershell
