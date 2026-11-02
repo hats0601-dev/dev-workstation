@@ -164,3 +164,82 @@ Windows PowerShell에서 파일과 디렉터리의 ACL 권한을 확인하고 �
 기존 FullControl 권한이 유지되므로 접근 제한 실험은 아니다.
 
 Windows ACL과 Linux chmod는 서로 다른 권한 체계이며, Linux에서의 실제 권한 변경은 별도 환경에서 검증할 예정이다.
+
+
+---
+
+## 8. Docker Ubuntu에서 Linux 권한 변경 실습
+
+### 실행 환경
+- Docker Engine: 29.9.2
+- 이미지: ubuntu:24.04
+- 컨테이너: ubuntu-practice
+
+### 8.1 Ubuntu 컨테이너 실행
+
+```powershell
+docker run -it --name ubuntu-practice ubuntu:24.04 bash
+```
+
+### 8.2 파일 및 디렉터리 생성
+
+```bash
+mkdir /permission-test
+touch /permission-test/test.txt
+ls -ld /permission-test
+ls -l /permission-test/test.txt
+```
+
+실제 출력:
+
+```text
+drwxr-xr-x 2 root root 4096 Nov 2 10:40 /permission-test
+-rw-r--r-- 1 root root 0 Nov 2 10:40 /permission-test/test.txt
+```
+
+### 8.3 권한을 700, 600으로 변경
+
+```bash
+chmod 700 /permission-test
+chmod 600 /permission-test/test.txt
+ls -ld /permission-test
+ls -l /permission-test/test.txt
+```
+
+실제 출력:
+
+```text
+drwx------ 2 root root 4096 Nov 2 10:40 /permission-test
+-rw------- 1 root root 0 Nov 2 10:40 /permission-test/test.txt
+```
+
+### 8.4 권한을 755, 644로 변경
+
+```bash
+chmod 755 /permission-test
+chmod 644 /permission-test/test.txt
+ls -ld /permission-test
+ls -l /permission-test/test.txt
+```
+
+실제 출력:
+
+```text
+drwxr-xr-x 2 root root 4096 Nov 2 10:40 /permission-test
+-rw-r--r-- 1 root root 0 Nov 2 10:40 /permission-test/test.txt
+```
+
+### 8.5 검증 결과
+
+| 대상 | 최초 권한 | 변경 권한 | 최종 권한 |
+|---|---|---|---|
+| 디렉터리 | 755 | 700 | 755 |
+| 파일 | 644 | 600 | 644 |
+
+컨테이너 종료 후 재시작해도 파일 및 권한이 유지되는 것을 확인했다.
+
+최종 상태 확인 로그: [linux-permissions.txt](../logs/linux-permissions.txt)
+
+### 결론
+
+Linux에서 chmod 명령어를 이용하여 파일과 디렉터리의 권한을 변경하고, ls -l 및 ls -ld 명령어로 변경 결과를 검증했다.
