@@ -477,6 +477,7 @@ docker info
 
 ```powershell
 docker build -t dev-workstation-web:1.0 .
+실제 빌드 출력 로그: [docker-build.txt](logs/docker-build.txt)
 ```
 
 ### 웹 서버 실행
