@@ -1,0 +1,42 @@
+=== 1. Create Directory ===
+
+
+    디렉터리: C:\Users\hats06012038\dev-workstation
+
+
+Mode                 LastWriteTime         Length Name                                                               
+----                 -------------         ------ ----                                                               
+d-----        2026-11-02   오후 8:48                terminal-evidence                                                  
+
+
+
+=== 2. Current Directory ===
+C:\Users\hats06012038\dev-workstation\terminal-evidence
+=== 3. List Including Hidden Files ===
+
+=== 4. Create File ===
+
+
+    디렉터리: C:\Users\hats06012038\dev-workstation\terminal-evidence
+
+
+Mode                 LastWriteTime         Length Name                                                               
+----                 -------------         ------ ----                                                               
+-a----        2026-11-02   오후 8:48              0 hello.txt                                                          
+
+
+
+=== 5. Write and Read File ===
+Hello Dev Workstation
+=== 6. Copy File ===
+copy.txt
+hello.txt
+=== 7. Rename File ===
+hello.txt
+renamed.txt
+=== 8. Delete File ===
+hello.txt
+=== 9. Return to Project Directory ===
+C:\Users\hats06012038\dev-workstation
+=== 10. Temporary Directory Removed ===
+False

@@ -112,6 +112,8 @@ cd ..
 
 상세 기록: [terminal.md](docs/terminal.md)
 
+실제 실행 출력: [terminal-output.txt](logs/terminal-output.txt)
+
 ### Linux 파일 권한
 
 Ubuntu 컨테이너에서 `chmod`로 파일과 디렉터리 권한을 변경했습니다.
