@@ -73,6 +73,23 @@ dev-workstation/
     └── vscode-github.png
 ```
 
+### 디렉터리 구조 설계 기준
+
+프로젝트 파일을 역할에 따라 분리하여 개발, 실행, 검증 및 문서 관리를 쉽게 할 수 있도록 구성했습니다.
+
+- `site/`: 웹 서버에 배포할 HTML 콘텐츠를 저장합니다.
+- `docs/`: 실습 과정, 실행 방법, 트러블슈팅을 기록합니다.
+- `logs/`: Docker와 터미널의 실제 실행 결과를 보관합니다.
+- `screenshots/`: 브라우저 접속 및 Git 연동 증거를 저장합니다.
+- `practice/`: 터미널 기본 조작 실습 파일을 관리합니다.
+- `permissions/`: 파일 권한 실습 파일을 관리합니다.
+- `Dockerfile`: 웹 서버 이미지를 재현하는 빌드 설정을 관리합니다.
+
+이 구조를 선택한 이유는 **배포 대상 파일, 개발·실습 파일, 실행 증거를 서로 분리하기 위해서**입니다.
+
+따라서 웹페이지를 수정할 때는 `site/`, 실행 결과를 확인할 때는 `logs/`, 작업 방법을 확인할 때는 `docs/`를 살펴보면 됩니다. 또한 다른 컴퓨터에서도 동일한 프로젝트 구조로 Docker 이미지를 빌드할 수 있습니다.
+
+
 ## 4. 미션 수행 체크리스트
 
 - [x] Git 설치 및 GitHub 저장소 연동
@@ -134,6 +151,74 @@ chmod 755 /permission-test
 
 - [권한 실습 문서](docs/permissions.md)
 - [Linux 권한 검증 로그](logs/linux-permissions.txt)
+
+### 절대 경로와 상대 경로 선택 기준
+
+**절대 경로**는 현재 작업 위치와 관계없이 파일의 전체 위치를 지정하는 방식입니다.
+
+예시:
+
+```powershell
+C:\Users\사용자명\dev-workstation\site\index.html
+```
+
+**상대 경로**는 현재 작업 디렉터리를 기준으로 파일 위치를 지정하는 방식입니다.
+
+예시:
+
+```powershell
+site\index.html
+```
+
+#### 언제 어떤 경로를 사용하는가?
+
+- **절대 경로:** Docker 바인드 마운트처럼 호스트의 정확한 디렉터리 위치가 필요한 경우 사용합니다.
+- **상대 경로:** 프로젝트 내부 파일을 참조하거나 다른 컴퓨터에서도 같은 프로젝트 구조를 사용할 때 적합합니다.
+- **재현성:** 사용자마다 컴퓨터의 폴더 위치가 다르므로 사용자 이름이 포함된 절대 경로를 코드에 고정하지 않습니다.
+
+이번 프로젝트의 Docker 바인드 마운트에서는 다음과 같이 현재 프로젝트 경로를 이용하여 절대 경로를 생성했습니다.
+
+```powershell
+docker run -d --name dev-web-bind -p 8082:80 --mount "type=bind,source=$((Get-Location).Path)\site,target=/usr/share/nginx/html,readonly" dev-workstation-web:1.0
+```
+
+`Get-Location`은 현재 위치를 확인하며, `.Path`는 해당 위치의 경로 문자열을 가져옵니다.
+
+따라서 다른 컴퓨터에서도 프로젝트 루트에서 실행하면 해당 컴퓨터의 실제 경로를 사용하여 바인드 마운트할 수 있습니다.
+
+### 절대 경로와 상대 경로 선택 기준
+
+**절대 경로**는 현재 작업 위치와 관계없이 파일의 전체 위치를 지정하는 방식입니다.
+
+예시:
+
+```powershell
+C:\Users\사용자명\dev-workstation\site\index.html
+```
+
+**상대 경로**는 현재 작업 디렉터리를 기준으로 파일 위치를 지정하는 방식입니다.
+
+예시:
+
+```powershell
+site\index.html
+```
+
+#### 언제 어떤 경로를 사용하는가?
+
+- **절대 경로:** Docker 바인드 마운트처럼 호스트의 정확한 디렉터리 위치가 필요한 경우 사용합니다.
+- **상대 경로:** 프로젝트 내부 파일을 참조하거나 다른 컴퓨터에서도 같은 프로젝트 구조를 사용할 때 적합합니다.
+- **재현성:** 사용자마다 컴퓨터의 폴더 위치가 다르므로 사용자 이름이 포함된 절대 경로를 코드에 고정하지 않습니다.
+
+이번 프로젝트의 Docker 바인드 마운트에서는 다음과 같이 현재 프로젝트 경로를 이용하여 절대 경로를 생성했습니다.
+
+```powershell
+docker run -d --name dev-web-bind -p 8082:80 --mount "type=bind,source=$((Get-Location).Path)\site,target=/usr/share/nginx/html,readonly" dev-workstation-web:1.0
+```
+
+`Get-Location`은 현재 위치를 확인하며, `.Path`는 해당 위치의 경로 문자열을 가져옵니다.
+
+따라서 다른 컴퓨터에서도 프로젝트 루트에서 실행하면 해당 컴퓨터의 실제 경로를 사용하여 바인드 마운트할 수 있습니다.
 
 ## 6. Docker 설치 및 기본 검증
 
@@ -258,6 +343,80 @@ curl.exe -i http://localhost:8081
 응답 기록: [web-8081.txt](logs/web-8081.txt)
 
 `-p 8080:80`은 호스트의 8080번 포트를 컨테이너 내부 80번 포트에 연결합니다. 동일한 이미지로 다른 포트의 컨테이너를 실행할 수 있습니다.
+
+### 포트 충돌 진단 및 해결 방법
+
+포트 충돌은 이미 다른 프로그램이나 컨테이너가 사용 중인 호스트 포트를 새 컨테이너에서도 사용하려 할 때 발생합니다.
+
+예를 들어 8080번 포트가 사용 중이라면 다른 컨테이너가 같은 주소와 포트를 사용할 수 없습니다.
+
+#### 1. 포트 사용 여부 확인
+
+PowerShell에서 8080번 포트를 사용 중인 프로세스를 확인합니다.
+
+```powershell
+Get-NetTCPConnection -LocalPort 8080 -State Listen -ErrorAction SilentlyContinue
+```
+
+`OwningProcess` 값은 포트를 사용하는 프로세스의 PID입니다.
+
+프로세스 이름 확인:
+
+```powershell
+Get-Process -Id <PID>
+```
+
+위 명령어의 `<PID>`는 실제 확인한 숫자로 바꿔 입력합니다.
+
+대체 명령어:
+
+```powershell
+netstat -ano | findstr :8080
+```
+
+Linux에서는 다음 명령어를 사용할 수 있습니다.
+
+```bash
+ss -ltnp
+```
+
+#### 2. Docker 컨테이너 확인
+
+```powershell
+docker ps
+```
+
+`PORTS` 항목에서 `0.0.0.0:8080->80/tcp` 등의 매핑을 확인합니다.
+
+#### 3. 포트 충돌 해결
+
+8080번 포트를 사용하는 컨테이너가 있고 중지해도 되는 경우:
+
+```powershell
+docker stop dev-web-8080
+```
+
+기존 서비스를 중지하면 안 되는 경우에는 다른 호스트 포트를 사용합니다.
+
+```powershell
+docker run -d --name dev-web-8083 -p 8083:80 dev-workstation-web:1.0
+```
+
+이후 새 포트로 접속합니다.
+
+```powershell
+curl.exe -i http://localhost:8083
+```
+
+#### 4. 해결 여부 검증
+
+```powershell
+docker ps
+```
+
+새 포트 매핑을 확인하고 `curl.exe` 결과가 `HTTP/1.1 200 OK`인지 검증합니다.
+
+**주의:** 이 내용은 포트 충돌 발생 시 사용할 진단 및 해결 절차입니다. 이번 실습에서 실제로 포트 충돌이 발생했다는 의미는 아닙니다.
 
 ## 9. 바인드 마운트 검증
 
